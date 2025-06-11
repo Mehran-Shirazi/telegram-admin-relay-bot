@@ -1,15 +1,18 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-TOKEN = 'Use Your Token'
+TOKEN = 'Use Your Token' # Replace this with your actual bot token
 YOUR_USER_ID = 123456789  # Replace this with your actual Telegram user ID
 
+# Dictionary to store conversation threads
 conversation_store = {}
 
+# Function to handle the /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles the /start command."""
     await update.message.reply_text("Welcome! Your messages will be forwarded to the admin.")
 
+# Function to handle incoming messages and forward them to the admin
 async def receive_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles incoming text messages from users and forwards them to the admin."""
     user_id = update.message.from_user.id
@@ -26,6 +29,7 @@ async def receive_message(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     forwarded_message = await context.bot.send_message(chat_id=YOUR_USER_ID, text=message_text)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming stickers and forward them to the admin
 async def receive_sticker(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles incoming sticker messages from users and forwards them to the admin."""
     user_id = update.message.from_user.id
@@ -42,6 +46,7 @@ async def receive_sticker(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     forwarded_message = await context.bot.send_sticker(chat_id=YOUR_USER_ID, sticker=sticker.file_id)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming photos and forward them to the admin
 async def receive_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles incoming photo messages from users and forwards them to the admin."""
     user_id = update.message.from_user.id
@@ -58,6 +63,7 @@ async def receive_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     forwarded_message = await context.bot.send_photo(chat_id=YOUR_USER_ID, photo=photo)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming audio messages and forward them to the admin
 async def receive_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles incoming audio messages from users and forwards them to the admin."""
     user_id = update.message.from_user.id
@@ -74,6 +80,7 @@ async def receive_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     forwarded_message = await context.bot.send_audio(chat_id=YOUR_USER_ID, audio=audio)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming voice messages and forward them to the admin
 async def receive_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     username = update.message.from_user.username or update.message.from_user.first_name
@@ -89,6 +96,7 @@ async def receive_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     forwarded_message = await context.bot.send_voice(chat_id=YOUR_USER_ID, voice=voice)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming video messages and forward them to the admin
 async def receive_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     username = update.message.from_user.username or update.message.from_user.first_name
@@ -104,6 +112,7 @@ async def receive_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     forwarded_message = await context.bot.send_video(chat_id=YOUR_USER_ID, video=video)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming video notes and forward them to the admin
 async def receive_video_note(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     username = update.message.from_user.username or update.message.from_user.first_name
@@ -119,6 +128,7 @@ async def receive_video_note(update: Update, context: ContextTypes.DEFAULT_TYPE)
     forwarded_message = await context.bot.send_video_note(chat_id=YOUR_USER_ID, video_note=video_note)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming GIFs and forward them to the admin
 async def receive_gif(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     username = update.message.from_user.username or update.message.from_user.first_name
@@ -134,6 +144,7 @@ async def receive_gif(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     forwarded_message = await context.bot.send_animation(chat_id=YOUR_USER_ID, animation=gif)
     conversation_store[forwarded_message.message_id] = conversation_id
 
+# Function to handle incoming files and forward them to the admin
 async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     username = update.message.from_user.username or update.message.from_user.first_name
@@ -150,7 +161,7 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     forwarded_message = await context.bot.send_document(chat_id=YOUR_USER_ID, document=file)
     conversation_store[forwarded_message.message_id] = conversation_id
 
-
+# Function to handle replies from both admin and users
 async def handle_reply(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles replies from both admin and users for text, stickers, photos, and audio."""
     if update.message.reply_to_message:
@@ -274,6 +285,7 @@ async def handle_reply(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         elif update.message.document:
             await receive_file(update, context)
 
+# Main function to set up the bot and handlers
 def main() -> None:
     application = ApplicationBuilder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
@@ -283,4 +295,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-
